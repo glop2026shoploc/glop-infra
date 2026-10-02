@@ -1,0 +1,10 @@
+name: glop-project
+
+services:
+  users-api:
+    build:
+      context: ../users
+    container_name: glop-users
+    ports:
+      - "8080:8080"
+    profiles: ["backend"]
