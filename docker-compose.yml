@@ -1,10 +1,43 @@
 name: glop-project
 
+# Healthcheck commun à toutes les bases 
+x-db-healthcheck: &db-healthcheck
+  test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+  interval: 5s
+  timeout: 3s
+  retries: 10
+
 services:
+  # ---------- USERS ----------
   users-api:
-    build:
-      context: ../users
-    container_name: glop-users
-    ports:
-      - "8080:8080"
-    profiles: ["backend"]
+    image: ghcr.io/glop2026shoploc/users:${USERS_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://users-db:5432/users
+      SPRING_DATASOURCE_USERNAME: users
+      SPRING_DATASOURCE_PASSWORD: ${USERS_DB_PASSWORD}
+    depends_on:
+      users-db:
+        condition: service_healthy
+    networks: [users-net, mss]
+
+  users-db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: users
+      POSTGRES_PASSWORD: ${USERS_DB_PASSWORD}
+    volumes:
+      - users-db-data:/var/lib/postgresql/data
+    healthcheck: *db-healthcheck
+    networks: [users-net]
+
+  # ---------- Autre microservice inc ----------
+
+networks:
+  mss: {}          # réseau partagé entre microservices
+  users-net: {}    # réseau privé users-api et users-db
+
+volumes:
+  users-db-data: {}
