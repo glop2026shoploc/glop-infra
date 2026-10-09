@@ -1,0 +1,7 @@
+services:
+  commande-api:
+    ports:
+      - "127.0.0.1:8084:8080"
+  commande-db:
+    ports:
+      - "127.0.0.1:5444:5432"

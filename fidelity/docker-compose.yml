@@ -1,0 +1,37 @@
+name: glop-fidelity
+
+services:
+  fidelity-api:
+    image: ghcr.io/glop2026shoploc/fidelity:${TAG:-latest}
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://fidelity-db:5432/fidelity
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      fidelity-db:
+        condition: service_healthy
+    networks: [fidelity-net, network-mss]
+
+  fidelity-db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fidelity
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - fidelity-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d fidelity"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [fidelity-net]   
+
+networks:
+  fidelity-net: {}           
+    external: true
+
+volumes:
+  fidelity-db-data: {}

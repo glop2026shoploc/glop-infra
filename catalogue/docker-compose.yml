@@ -1,0 +1,36 @@
+name: glop-catalogue
+
+services:
+  catalogue-api:
+    image: ghcr.io/glop2026shoploc/catalogue:${TAG:-latest}
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://catalogue-db:5432/catalogue
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      catalogue-db:
+        condition: service_healthy
+    networks: [catalogue-net, network-mss]
+
+  catalogue-db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: catalogue
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - catalogue-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d catalogue"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [catalogue-net]   
+networks:
+  catalogue-net: {}           
+  network-mss:
+    external: true        
+volumes:
+  catalogue-db-data: {}

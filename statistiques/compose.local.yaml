@@ -1,0 +1,7 @@
+services:
+  statistiques-api:
+    ports:
+      - "127.0.0.1:8083:8080"
+  statistiques-db:
+    ports:
+      - "127.0.0.1:5443:5432"

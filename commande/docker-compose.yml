@@ -1,0 +1,37 @@
+name: glop-commande
+
+services:
+  commande-api:
+    image: ghcr.io/glop2026shoploc/commande:${TAG:-latest}
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://commande-db:5432/commande
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      commande-db:
+        condition: service_healthy
+    networks: [commande-net, network-mss]
+
+  commande-db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: commande
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - commande-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d commande"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [commande-net]   
+
+networks:
+  commande-net: {}           
+  network-mss:
+    external: true        
+volumes:
+  commande-db-data: {}

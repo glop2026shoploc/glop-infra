@@ -1,0 +1,7 @@
+services:
+  catalogue-api:
+    ports:
+      - "127.0.0.1:8085:8080"
+  catalogue-db:
+    ports:
+      - "127.0.0.1:5445:5432"
