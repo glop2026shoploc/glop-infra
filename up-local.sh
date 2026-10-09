@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-SERVICES=(users fidelity statistiques commande catalogue)
+SERVICES=(users fidelity statistiques commande catalogue front)
 if [ $# -gt 0 ]; then SERVICES=("$@"); fi
 
 docker network inspect network-mss >/dev/null 2>&1 || docker network create network-mss
