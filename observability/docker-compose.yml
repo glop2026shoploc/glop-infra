@@ -20,7 +20,7 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
     volumes:
       - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
-    depends_on: [prometheus, loki]
+    depends_on: [prometheus, loki, tempo]
     networks: [network-mss]
 
   loki:
@@ -42,9 +42,19 @@ services:
     depends_on: [loki]
     networks: [network-mss]
 
+  tempo:
+    image: grafana/tempo:2.8.1
+    restart: unless-stopped
+    command: -config.file=/etc/tempo/tempo.yml
+    volumes:
+      - ./tempo.yml:/etc/tempo/tempo.yml:ro
+      - tempo-data:/var/tempo
+    networks: [network-mss]
+
 networks:
   network-mss:
     external: true
 volumes:
   prometheus-data: {}
   loki-data: {}
+  tempo-data: {}
