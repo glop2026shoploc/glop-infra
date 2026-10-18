@@ -30,7 +30,8 @@ services:
     networks: [fidelity-net]   
 
 networks:
-  fidelity-net: {}           
+  fidelity-net: {}
+  network-mss:
     external: true
 
 volumes:

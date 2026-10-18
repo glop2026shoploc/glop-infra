@@ -1,0 +1,18 @@
+name: glop-front
+
+services:
+  front:
+    image: ghcr.io/glop2026shoploc/front:${TAG:-latest}
+    restart: unless-stopped
+    environment:
+      # Appels faits côté serveur Next : noms des conteneurs sur network-mss
+      USERS_API_URL: http://users-api:8080
+      FIDELITY_API_URL: http://fidelity-api:8080
+      STATISTIQUES_API_URL: http://statistiques-api:8080
+      COMMANDE_API_URL: http://commande-api:8080
+      CATALOGUE_API_URL: http://catalogue-api:8080
+    networks: [network-mss]       # pas de base : seulement le réseau partagé
+
+networks:
+  network-mss:
+    external: true
