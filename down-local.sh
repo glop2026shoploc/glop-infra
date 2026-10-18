@@ -3,7 +3,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-SERVICES=(users fidelity statistiques commande catalogue front)
+SERVICES=(users fidelity statistiques commande catalogue front gateway)
 if [ $# -gt 0 ]; then SERVICES=("$@"); fi
 
 for s in "${SERVICES[@]}"; do
