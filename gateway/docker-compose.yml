@@ -1,0 +1,23 @@
+name: glop-gateway
+
+services:
+  gateway:
+    image: ghcr.io/glop2026shoploc/gateway:${TAG:-latest}
+    restart: unless-stopped
+    environment:
+      USERS_URL: http://users-api:8080
+      FIDELITY_URL: http://fidelity-api:8080
+      STATISTIQUES_URL: http://statistiques-api:8080
+      COMMANDE_URL: http://commande-api:8080
+      CATALOGUE_URL: http://catalogue-api:8080
+      FRONT_URL: http://front:3000
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health | grep -q UP"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    networks: [network-mss]
+
+networks:
+  network-mss:
+    external: true
