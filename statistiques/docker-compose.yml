@@ -5,6 +5,7 @@ services:
     image: ghcr.io/glop2026shoploc/statistiques:${TAG:-latest}
     restart: unless-stopped
     environment:
+      SERVER_PORT: 8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://statistiques-db:5432/statistiques
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
