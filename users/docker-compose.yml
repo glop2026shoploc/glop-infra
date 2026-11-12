@@ -9,6 +9,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://users-db:5432/users
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      CATALOGUE_URL: http://catalogue-api:8080/api/catalogue
     depends_on:
       users-db:
         condition: service_healthy
